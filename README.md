@@ -10,5 +10,5 @@ MDZZ JS
 [videodown](./videodown/index.html)
 读取HAR文件
 
-[Musketeers](./musketeers/)
+[musketeers](./musketeer/)
 JS游戏/挂件-火枪手对决
