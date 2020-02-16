@@ -8,8 +8,6 @@ Author: FoXnEs(luuljh)
 
 How to use:
 
-// 注意：颜色都应为RGB式，否则请用下面的函数mm.colorRgb把16进制颜色转为RGB
-
 __## mini挂件 (简单) ##__:
 
 ```
@@ -22,6 +20,8 @@ mm.justWidget('容器ID','canvasID', 火枪手最少量, 火枪手最多量);
 当容器长宽超过200时，有25%可能会开启据点战争（即填充更多火枪手）
 
 __## 自定义  ##__
+
+注意：颜色都应为RGB式，否则请用下面的函数mm.colorRgb把16进制颜色转为RGB
 
 ```
 var mm = new musketeers();
