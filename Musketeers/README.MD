@@ -1,5 +1,3 @@
-Author: FoXnEs(luuljh)
-
 下载JS：[musketeers.js](musketeers.js)
 
 预览：
