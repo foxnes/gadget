@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>FILE2STR</title>
+	<style type="text/css">
+	*{margin: 0;padding: 0;box-sizing: border-box;}
+	body{width: 800px;margin: 20px auto;}
+	.s{margin: 20px 0;}
+	#r{padding: 8px 10px;border: 1px solid gray;overflow-y: scroll;max-height: 600px;}
+	img{max-width: 100%;}
+	pre{white-space: pre-wrap;font-family: inherit;}
+	input[type=file]{border: 1px solid gray;padding: 4px 6px;}
+	.bd{border: 1px solid gray;display: inline-block;padding: 4px 6px;}
+	fieldset{margin: 10px 0;padding: 5px 10px;}
+	</style>
+</head>
+<body>
+
+<h1>在线文件转字符串</h1>
+<small>请确保您使用的浏览器是最新版本的</small>
+
+<div class="s">
+	进度条：<progress value="0" max="100" id="progress"></progress>
+</div>
+
+<div class="s">
+	<h2>转换成字符串：</h2><br />
+	<fieldset>
+	<legend>编码设置</legend>
+	大小限制：<input style="width: 60px;" id="kblimit" type="number" value="50">（单位KB，字符串大于该值时自动下载，建议设置小于100KB，否则浏览器可能会卡死）<br />
+	不编码率：<input style="width: 60px;" type="number" id="llimit" value="0">（0.001~0.005，用于缓解生成超长字符串卡死的情况，设置此项后 大小限制 可调大）
+	自动配置：<a href="javascript:kblimit.value=1024;llimit.value=0.005"><button>文件大于500KB 不自动下载</button></a>
+	<a href="javascript:kblimit.value=512;llimit.value=0.002"><button>文件大于100KB小于500KB 不自动下载</button></a>
+	<a href="javascript:kblimit.value=100;llimit.value=0.001"><button>文件小于100KB 不自动下载</button></a>
+	<a href="javascript:kblimit.value=50;llimit.value=0"><button>文件小于50KB</button></a>
+	<br />
+	<small>一般建议超过100KB的文件都开启自动下载（大小限制设置为50~100），否则字符串太大浏览器可能受不了，或者输出得极慢</small>
+	</fieldset>
+	上传：<input type="file" id="f">
+	<button onclick="file2str();">确定</button>
+</div>
+
+<div class="s">
+	字符串：
+	<div id="r" contenteditable="true">转换后的字符会显示在这里</div>
+</div>
+
+<div class="s">
+	<h2>转换回文件：</h2><br />
+	<input type="file" id="rf">
+	<div class="bd">预览图片：<input type="checkbox" id="isvimg"></div>
+	<div class="bd">预览文本：<input type="checkbox" id="isvtext"></div>
+	后缀：<input type="text" id="fext" placeholder="txt/jpg/png/zip">
+	<button onclick="download(r.innerHTML,'dl')">确定/下载</button>
+</div>
+
+<div class="s">
+	<h2>预览区：</h2><br />
+	<img style="display: block;float: left;" src="https://i.loli.net/2018/07/31/5b5fca0b7e5a5.jpg" id="aovimg">
+	<textarea style="width: 540px;height: 250px;" id="aovtext"></textarea>
+</div>
+
+<div class="s">
+	<h2>快速体验：</h2><hr />
+	<input type="input" style="width: 50px;text-align: center;" value="̴̴̸̴̵̴̶̶̶̵̷̴̷̵̵̵̵̶̶̵̵̵̵̵̶̵̵̵̵̵̵̵̵̵̵̵̵̵̸̵̵̵̶̵̴̴̴̨̨̢̨̧̧̧̡̧̡̡̡̢̡̡̧̨̡̨̡̡̨̡̡̡̡̨̡̡̡̡̡̡̡̡̡̡̢̡̡̡̧̡̡̢̡̡̧̡̧̡̘̙̰̦̣̖̳̙̹̦̖̩̲̩̰͖̦̲̩̦̰̰̤̥͈͔͉̥̙̙̱̙͔̣̩͖̩̣̩͕͇̩̱̩͙͖̩̘̹̰̱̗͉͇̦͉͇̗̣͔̥̥̙̗̣̩͉͔͉̥̙̲͙̩͕̙͉͕̙͉͔̦̖͙̘̳̣̘͇̤̲͉͈̠̤͉͉̠̤͔͉̥̙̙͙̩͕̣̙̣͙̖̹̘̗͇̥̗̲̲̰̤̲̣̰͙̥͉͕̹͕̩͕̹͔̥̰̦͉͈͔͓̘͇͉͈̱͈̦̘͇͉͈̖̦͉͇̱̔́̀̈̆ͧ̉̉́͒́̈̉͑́͒̈̈̐̓̈́̇̈̈͑̒̈͑́̇̒̈͒̒̇̇̀̈͑̈͒̈̒̇̇̇̇̓̉̉̈́͗ͦͣͦͤͦͦ̆̓ͥͣ̂ͣ̑̃͂ͥͤͦͤ̓ͥ̒̑́̂͑͂̂ͣ͂̈́͗͒͐ͥ̈́͐ͥ͐͐̉ͥ͑̅͒͑̅ͥ̈́͐͑̂̓̀̒̑́̂͑ͣ̐̄̑͂̂ͣ̐͆̈́͗͗̈̆̇̓̆̓̃ͤ̑̈́̈́͐͒̂͑̀̅̄̑ͥ̄͒̓̓̕̕̕̕̕̕͘̕͘̕̕̕̕̕̕̕̕͘͢͢͢͢͢͢͠͠͡͡͡ͅͅͅ" />复制左边的所有内容，然后复制到【转换成字符串】下的【字符串】下的大黑框里面，然后选中【转换回文件】下的预览文本，然后点击【确定/下载】
+	<pre>
+
+<h2>帮助：</h2><hr />选择文件（最好1MB以下），然后点击确认就会自动进行计算，速度看计算机性能和浏览器。计算完成后，中间的那条大黑框里就会出现计算出来的字符串了，如果字符串过大，则会自动进行下载。
+如果需要把字符串转换回文件，则在后缀输入框中输入后缀，把字符串输入到上面的大黑框里，然后点击下载，如果字符串太大，请把字符串复制到一个新建的TXT文件中，然后点击下载前面的选择文件按钮来选择刚才建创的txt文件，再点击下载即可。
+
+若你想预览一下文件，可以选中预览图片或者预览文本再点击确定。若预览的时候卡死，请直接下载。如何下载：请确保没有选中预览图片或者预览文本，然后点击下载。
+
+有的时候预览图或字会出现乱码，可能的原因是1.字符编码 2.您输入的字符串内容不是由图片或者文字转换得来的，并不说明文件被损坏，您可以下载下来自行修改后缀。 3.部分乱码可能是输出了文件头部信息
+
+文件太大的时候点击按钮后会卡顿几秒钟，请不要重复点击，请盯着进度条看~(~▽~)~。
+
+若输出的字符串中有一堆的(+)(:)等等符号，请刷新页面
+
+</pre>
+	<small>&copy; (c) 2018 <a href="http://blog.lljh.bid">Luuljh</a></small>
+</div>
+
+<script type="text/javascript" src="file2str.js"></script>
+
+</body>
+</html>

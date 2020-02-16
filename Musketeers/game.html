@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html id="screen">
+<head>
+  <meta charset="utf-8">
+  <title>火枪手对决</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="renderer" content="webkit">
+</head>
+<body>
+
+<style type="text/css">
+html{font-size: 16px;line-height: 23px;font-family: '微软雅黑';-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;-khtml-user-select: none;user-select: none;}
+*{padding: 0;margin: 0;box-sizing: border-box;}
+canvas {display: block;margin-bottom: 10px;box-shadow: 0 0 10px #c8c8c8}
+#screen{width: 100vw;height: 100%;overflow-x: hidden;}
+.ct{margin: 0 auto;max-width: 1024px;padding: 10px;}
+.colorsheet{display: inline-block;height: 35px;width: 60px;}
+button{font-size: 20px;padding: 2px 5px;font-family: '微软雅黑';background: #eee;border: 1px solid #cecece;cursor: pointer;border-radius: 2px;}
+</style>
+
+<canvas id="cc">玩不了，更新浏览器啊！！</canvas>
+
+<div class="ct">
+  <p>
+  <button onclick="mm.clearNPC()">清空</button>
+  <button id="warbutton" onclick="mm.warStart = !mm.warStart;this.innerHTML=mm.warStart?'战斗结束':'战斗开始';mm.main()">战斗开始</button>
+  </p>
+  <br />
+  选择队伍：<p><span style="background-color: rgb(0,0,0)" onclick="mm.team='0,0,0'" class="colorsheet"></span> <span style="background-color: rgb(64,0,0)" onclick="mm.team='64,0,0'" class="colorsheet"></span> <span style="background-color: rgb(255,0,0)" onclick="mm.team='255,0,0'" class="colorsheet"></span> <span style="background-color: rgb(255,128,64)" onclick="mm.team='255,128,64'" class="colorsheet"></span> <span style="background-color: rgb(0,128,0)" onclick="mm.team='0,128,0'" class="colorsheet"></span> <span style="background-color: rgb(138,27,228)" onclick="mm.team='138,27,228'" class="colorsheet"></span> <span style="background-color: rgb(45,90,210)" onclick="mm.team='45,90,210'" class="colorsheet"></span> </p>
+  <br />
+  <small>说明：选择队伍，在上面空白区域随便打点点，建立好后，再点击[战斗开始]即可。可以参考欧洲排队枪毙战术排布。若建不了队伍，可以在上面👆选哦。还有，一定要有不同颜色的队伍，战斗才可以开始。</small>
+  <p><small>By FoXnEs</small></p>
+</div>
+
+<script type="text/javascript" src="musketeers.js"></script>
+
+<script type="text/javascript">
+var mm = new musketeers();
+mm.init('screen', 'cc');
+mm.warOverCalling = function(){
+  warbutton.innerHTML = "战斗开始";
+}
+</script>
+
+</body>
+</html>
