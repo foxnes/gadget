@@ -12,7 +12,7 @@ mm.justWidget('容器ID','canvasID', 火枪手最少量, 火枪手最多量);
 最少量, 最多量按照容器大小来填
 会自动获取"容器ID"的高度和宽度并设置为canvas的高度和宽度。
 如果报错，可能是你写错了ID，请检查ID是否存在。
-当容器长宽超过200时，有25%可能会开启据点战争（即填充更多火枪手）
+当容器长宽超过200时，有一定可能会自动开启据点战争（即填充更多火枪手）
 
 __## 自定义  ##__
 
@@ -175,11 +175,60 @@ function musketeers(){
       meMusk.gameOver();
     }
     meMusk.ctx.clearRect(0, 0, meMusk.cc.width, meMusk.cc.height);
+    var hitMe = function(l){
+      meMusk.NPC[i].hp -= l;
+      if (meMusk.NPC[i].hp <= 0){
+         meMusk.NPC[i].lastB = new Date().getTime();
+      }
+      meMusk.bullet.splice(q, 1);
+      q--;
+      meMusk.NPC[i].position.x -= sx / (skrx + skry) * 6;
+      meMusk.NPC[i].position.y -= sy / (skrx + skry) * 6;
+      // 击退效果
+    }
     for (var i = 0; i < meMusk.NPC.length; i++) {
+      // 中弹判断
+      for (var q = 0; q < meMusk.bullet.length; q++) {
+        if (meMusk.bullet[q].color != meMusk.NPC[i].team){
+          var sx = meMusk.bullet[q].position.x - meMusk.NPC[i].position.x,
+          sy = meMusk.bullet[q].position.y - meMusk.NPC[i].position.y;
+          var skrx = Math.round(Math.abs(sx)),
+          skry = Math.round(Math.abs(sy));
+          if (skrx <= 3 && skry <= 3) {
+            hitMe(6);
+          } else if (skrx <= 4 && skry <= 4) {
+            hitMe(3);
+          } else if (skrx <= 6 && skry <= 6) {
+            hitMe(2);
+          } else if (skrx <= 7 && skry <= 7){
+            hitMe(1);
+          }
+          if (q<0){q=0}
+        }
+      }
+      if (meMusk.NPC[i].hp <= 0) {
+        var timetofade = new Date().getTime() - meMusk.NPC[i].lastB;
+        timetofade = -1/1250*timetofade+1;  // >1250ms 自动GG
+        if (timetofade <= 0){
+          meMusk.NPC.splice(i, 1);
+          i = i-1 <= 0 ? 0 : i-1;
+        }else{
+          meMusk.ctx.fillStyle = 'rgba(0,0,0,'+timetofade+')';
+          meMusk.ctx.strokeStyle = 'rgba('+meMusk.NPC[i].team+','+timetofade+')';
+          meMusk.ctx.font = "10px Arial";
+          meMusk.ctx.fillText('☠️', meMusk.NPC[i].position.x-6.5, meMusk.NPC[i].position.y+4);
+          meMusk.ctx.beginPath();
+          meMusk.ctx.arc(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y, 7.5, 0, Math.PI * 2);
+          meMusk.ctx.closePath();
+          meMusk.ctx.stroke();
+        }
+        //死亡
+        continue;
+      }
       //自动避弹 愚蠢。。 hp少了动得慢
       if (meMusk.warStart && Math.random() > 0.45) {
-        meMusk.NPC[i].position.x += meMusk.NPC[i].hp / 10 * meMusk.rand(0, 2) * (Math.random() > 0.5 ? -1 : 1);
-        meMusk.NPC[i].position.y += meMusk.NPC[i].hp / 10 * meMusk.rand(0, 2) * (Math.random() > 0.5 ? -1 : 1);
+        meMusk.NPC[i].position.x += meMusk.NPC[i].hp / 10 * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
+        meMusk.NPC[i].position.y += meMusk.NPC[i].hp / 10 * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
         if (meMusk.NPC[i].position.x < 4) {
           meMusk.NPC[i].position.x = 4;
         }
@@ -206,8 +255,8 @@ function musketeers(){
             // 目标偏离  简称手抖
             // 这里本来有BUG   anPs.x / .y 与NPC的坐标"关联"了，花了我一早上去排查。。一定要小心啊！！
             // 已经在arrRandBut修复好了
-            anPs.x += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 4) * (Math.random() > 0.5 ? -1 : 1);
-            anPs.y += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 4) * (Math.random() > 0.5 ? -1 : 1);
+            anPs.x += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
+            anPs.y += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
             var addx = anPs.x - meMusk.NPC[i].position.x;
             var addy = anPs.y - meMusk.NPC[i].position.y;
             let mod = Math.round(Math.pow(Math.pow(addx, 2) + Math.pow(addy, 2), 0.5));
@@ -226,7 +275,7 @@ function musketeers(){
             // 找不到目标了
             meMusk.gameOver();
           }
-          if (meMusk.NPC[i].hp / 10 * Math.random() < 0.01 || (meMusk.NPC[i].hp <= 3 && Math.random() < 0.5)){
+          if (meMusk.NPC[i].hp / 10 * Math.random() < 0.08 || (meMusk.NPC[i].hp <= 3 && Math.random() < 0.5)){
             meMusk.NPC[i].lastB = 0;  // 狂暴模式 连发
           }else{
             meMusk.NPC[i].lastB = new Date().getTime();
@@ -234,39 +283,18 @@ function musketeers(){
         }
       }
       // 射击结束
-      // 中弹判断
-      for (var q = 0; q < meMusk.bullet.length; q++) {
-        if (meMusk.bullet[q].color != meMusk.NPC[i].team){
-          var skrx = Math.round(Math.abs(meMusk.bullet[q].position.x - meMusk.NPC[i].position.x));
-          var skry = Math.round(Math.abs(meMusk.bullet[q].position.y - meMusk.NPC[i].position.y));
-          if (skrx <= 3 && skry <= 3) {
-            //原地去世
-            meMusk.NPC[i].hp -= 6;
-            meMusk.bullet.splice(q, 1);
-            q--;
-          } else if (skrx <= 4 && skry <= 4) {
-            meMusk.NPC[i].hp -= 3;
-            meMusk.bullet.splice(q, 1);
-            q--;
-          } else if (skrx <= 6 && skry <= 6) {
-            meMusk.NPC[i].hp -= 2;
-            meMusk.bullet.splice(q, 1);
-            q--;
-          }
-          if (q<0){q=0}
-        }
-      }
-      if (meMusk.NPC[i].hp <= 0) {
-        meMusk.NPC[i].hp = 0;
-        meMusk.NPC.splice(i, 1);
-        i = i-1 <= 0 ? 0 : i-1;
-        continue;
-        //死亡 不画图
-      }
       // 画图
-      meMusk.ctx.fillStyle = 'rgba(' + meMusk.NPC[i].team + ', ' + (meMusk.NPC[i].hp / 10) + ')';
+      let hprate = meMusk.NPC[i].hp / 10;
+      meMusk.ctx.fillStyle = 'rgba(' + meMusk.NPC[i].team + ',0.95)';
       meMusk.ctx.beginPath();
-      meMusk.ctx.arc(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y, 5, 0, Math.PI * 2);
+      meMusk.ctx.moveTo(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y);
+      meMusk.ctx.arc(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y, 5, 0, Math.PI * 2 * hprate);
+      meMusk.ctx.closePath();
+      meMusk.ctx.fill();
+      meMusk.ctx.fillStyle = 'rgba(' + meMusk.NPC[i].team + ',' + hprate + ')';
+      meMusk.ctx.beginPath();
+      meMusk.ctx.moveTo(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y);
+      meMusk.ctx.arc(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y, 5, Math.PI * 2 * hprate, Math.PI * 2);
       meMusk.ctx.closePath();
       meMusk.ctx.fill();
     }
@@ -305,10 +333,10 @@ function musketeers(){
   }
   meMusk.justWidget = function(paID, caID, min, max){
     var Widget = new musketeers();
-    Widget.count = 0; //  自动换颜色
+    Widget.count = 1; //  自动换颜色
     Widget.init(paID, caID);
     var randTeam = function(){
-      return ['0,0,0', '64,0,0', '255,0,0', '255,128,64', '0,128,0', '138,27,228', '45,90,210'][Widget.rand(0, 6)];
+      return ['0,0,0', '176,115,97', '255,0,0', '255,128,64', '0,128,0', '138,27,228', '45,90,210'][Widget.rand(0, 6)];
     }
     var addNStart = function(){
       let sum = Widget.rand(min, max);
@@ -318,7 +346,7 @@ function musketeers(){
           y: Widget.rand(0, Widget.cc.height)
         });
       }
-      if (Widget.cc.width >= 200 && Widget.cc.height >= 200 && Math.random() < 0.25){
+      if (Widget.cc.width >= 200 && Widget.cc.height >= 200 && Math.random() < 0.35){
         // 随机据点战争
         var rt = randTeam();
         var tmpx = Widget.rand(0, Widget.cc.width);
@@ -346,13 +374,19 @@ function musketeers(){
     Widget.clickCalling = function(){
       // 点击canvas时执行
       Widget.start();
-      if (++Widget.count > Math.round(min+max)/4){
+      if (++Widget.count > Math.ceil(max/min)){
         Widget.count = 0;
         Widget.changeTeam(randTeam());
       }
     }
     Widget.warOverCalling = function(){
-      addNStart();
+      if (Widget.NPC.length > max){
+        // 计划生育  偶有生存力特别强的队伍
+        Widget.NPC.splice(0, Widget.NPC.length - max);
+      }
+      setTimeout(function(){
+        addNStart();
+      }, 500);
     }
     addNStart();
   }
