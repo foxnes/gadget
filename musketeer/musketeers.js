@@ -195,6 +195,7 @@ function musketeers(){
       // 中弹判断
       if (isNaN(meMusk.NPC[i].position.x) || isNaN(meMusk.NPC[i].position.y)){
         // 莫名BUG？？
+        meMusk.NPC[i].hp = 0;
         meMusk.NPC.splice(i, 1);
         i = i-1 <= 0 ? 0 : i-1;
         continue;
@@ -412,20 +413,22 @@ function musketeers(){
       addNStart();
     }
     Widget.mainCalling = function(){
-      var autoCL = 10;  // 换行
-      Widget.ctx.globalAlpha = 0.6;
-      Widget.ctx.font = '10px Arial';
-      for (let item in Widget.record){
-        // 打印出来
-        Widget.ctx.fillStyle = 'rgb('+item+')';
-        Widget.ctx.beginPath();
-        Widget.ctx.arc(6, autoCL-4, 4, 0, Math.PI*2);
-        Widget.ctx.closePath();
-        Widget.ctx.fill();
-        Widget.ctx.fillText(Widget.record[item], 12, autoCL);
-        autoCL += 10;
+      if(Widget.cc.height >= 80){
+        var autoCL = 10;  // 换行
+        Widget.ctx.globalAlpha = 0.6;
+        Widget.ctx.font = '10px Arial';
+        for (let item in Widget.record){
+          // 打印出来
+          Widget.ctx.fillStyle = 'rgb('+item+')';
+          Widget.ctx.beginPath();
+          Widget.ctx.arc(6, autoCL-4, 4, 0, Math.PI*2);
+          Widget.ctx.closePath();
+          Widget.ctx.fill();
+          Widget.ctx.fillText(Widget.record[item], 12, autoCL);
+          autoCL += 10;
+        }
+        Widget.ctx.globalAlpha = 1;
       }
-      Widget.ctx.globalAlpha = 1;
     }
     addNStart();
     return Widget;
