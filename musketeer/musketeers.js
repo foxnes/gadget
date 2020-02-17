@@ -193,6 +193,12 @@ function musketeers(){
     }
     for (var i = 0; i < meMusk.NPC.length; i++) {
       // 中弹判断
+      if (isNaN(meMusk.NPC[i].position.x) || isNaN(meMusk.NPC[i].position.y)){
+        // 莫名BUG？？
+        meMusk.NPC.splice(i, 1);
+        i = i-1 <= 0 ? 0 : i-1;
+        continue;
+      }
       for (var q = 0; q < meMusk.bullet.length; q++) {
         if (meMusk.bullet[q].color != meMusk.NPC[i].team){
           var sx = meMusk.bullet[q].position.x - meMusk.NPC[i].position.x,
@@ -346,10 +352,12 @@ function musketeers(){
     var addNStart = function(){
       let sum = Widget.rand(min, max);
       for (var i = 0; i < sum; i++) {
-        Widget.addNPC(randTeam(), {
-          x: Widget.rand(0, Widget.cc.width),
-          y: Widget.rand(0, Widget.cc.height)
-        });
+        setTimeout(function(){
+          Widget.addNPC(randTeam(), {
+            x: Widget.rand(0, Widget.cc.width),
+            y: Widget.rand(0, Widget.cc.height)
+          });
+        }, 800/sum*i);
       }
       if (Widget.cc.width >= 200 && Widget.cc.height >= 200 && Math.random() < 0.35){
         // 随机据点战争
@@ -357,24 +365,29 @@ function musketeers(){
         var tmpx = Widget.rand(0, Widget.cc.width);
         var tmpy = Widget.rand(0, Widget.cc.height);
         for (var i = 0; i < min; i++) {
-          Widget.addNPC(rt, {
-            x: tmpx + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1),
-            y: tmpy + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1)
-          });
+          setTimeout(function(){
+            Widget.addNPC(rt, {
+              x: tmpx + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1),
+              y: tmpy + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1)
+            });
+          }, 500/min*i);
         }
         var rt_ = randTeam();
         var tmpx_ = Widget.rand(0, Widget.cc.width);
         var tmpy_ = Widget.rand(0, Widget.cc.height);
         for (var i = 0; i < max; i++) {
-          Widget.addNPC(rt_, {
-            x: tmpx_ + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1),
-            y: tmpy_ + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1)
-          });
+          setTimeout(function(){
+            Widget.addNPC(rt_, {
+              x: tmpx_ + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1),
+              y: tmpy_ + Widget.rand(2, 8) * (Math.random() > 0.5 ? 1 : -1)
+            });
+          }, 800/max*i);
         }
       }
       setTimeout(function(){
+        // 上面timer动态添加
         Widget.start();
-      }, 200);
+      }, 1080);
     }
     Widget.clickCalling = function(){
       // 点击canvas时执行
@@ -396,10 +409,7 @@ function musketeers(){
           Widget.record[item.team] = Widget.record[item.team] ? Widget.record[item.team]+1 : 1;
         }
       });
-      // 定时，防止BUG出现
-      setTimeout(function(){
-        addNStart();
-      }, 1000);
+      addNStart();
     }
     Widget.mainCalling = function(){
       var autoCL = 10;  // 换行
