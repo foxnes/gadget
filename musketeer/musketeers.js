@@ -52,6 +52,7 @@ function musketeers(){
   meMusk.clickCalling = function(){void 0}
   meMusk.startCalling = function(){void 0}
   meMusk.fps = 30;
+  meMusk.diedpic = 'data:img/jpg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QAiRXhpZgAATU0AKgAAAAgAAQESAAMAAAABAAEAAAAAAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAAQABADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD6g0LT18N/tC+JNR+NHxv+IXwf+K3/AAsNfAo1rStZhuLPxjJqVn59hptjC0UsNrZpbSWksaTW/mwztITMWkZ3q/GHS11b4tK3wd+PPxC+Lnxv0Px1afD2wvNY1yC2g+HupQ2l7cyW18kcMMFzYzrBcG6RbeWadreNFcPEjRtX4p68P2l/HkPxE+Dvjj4qfFjxdqSW2peHdA0S0s28B2mlRao2m6/pVw6GOd2XUoraK/kuI7hjwqobcwDF8S+MNd8K/FvwVa/C34PfEz4WfFzwLMqeENG8S6Ta6nL8VpL6ytrW41XWpUG1DbR6e1tPqP2trmGK7LHJuUicpNO1/K34f8G9u/kxVL628/1/4Fr9vNH/2Q==';
   meMusk.init = function(pbox, cc) {
     meMusk.cc = document.getElementById(cc);
     if (meMusk.cc.getContext) {
@@ -73,6 +74,9 @@ function musketeers(){
       let pS = meMusk.getPosition(e);
       meMusk.addNPC(meMusk.team, pS);
     });
+    let diedpic = new Image();
+    diedpic.src = meMusk.diedpic;
+    meMusk.diedpic = diedpic;
   }
   meMusk.getPosition = function(ev) {
     var x, y;
@@ -213,14 +217,14 @@ function musketeers(){
           meMusk.NPC.splice(i, 1);
           i = i-1 <= 0 ? 0 : i-1;
         }else{
-          meMusk.ctx.fillStyle = 'rgba(0,0,0,'+timetofade+')';
-          meMusk.ctx.strokeStyle = 'rgba('+meMusk.NPC[i].team+','+timetofade+')';
-          meMusk.ctx.font = "10px Arial";
-          meMusk.ctx.fillText('☠️', meMusk.NPC[i].position.x-6.5, meMusk.NPC[i].position.y+4);
+          meMusk.ctx.globalAlpha = timetofade;
+          meMusk.ctx.strokeStyle = 'rgb('+meMusk.NPC[i].team+')';
+          meMusk.ctx.drawImage(meMusk.diedpic, meMusk.NPC[i].position.x-6, meMusk.NPC[i].position.y-6, 12, 12);
           meMusk.ctx.beginPath();
           meMusk.ctx.arc(meMusk.NPC[i].position.x, meMusk.NPC[i].position.y, 7.5, 0, Math.PI * 2);
           meMusk.ctx.closePath();
           meMusk.ctx.stroke();
+          meMusk.ctx.globalAlpha = 1;
         }
         //死亡
         continue;
@@ -389,5 +393,6 @@ function musketeers(){
       }, 500);
     }
     addNStart();
+    return Widget;
   }
 }
