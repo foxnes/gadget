@@ -220,7 +220,7 @@ function musketeers(){
       }
       if (meMusk.NPC[i].hp <= 0) {
         var timetofade = new Date().getTime() - meMusk.NPC[i].lastB;
-        timetofade = -1/1250*timetofade+1;  // >1250ms 自动GG
+        timetofade = -1/1520*timetofade+1;  // >1520ms后 自动GG
         if (timetofade <= 0){
           meMusk.NPC.splice(i, 1);
           i = i-1 <= 0 ? 0 : i-1;
@@ -267,8 +267,8 @@ function musketeers(){
             // 目标偏离  简称手抖
             // 这里本来有BUG   anPs.x / .y 与NPC的坐标"关联"了，花了我一早上去排查。。一定要小心啊！！
             // 已经在arrRandBut修复好了
-            anPs.x += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
-            anPs.y += (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
+            anPs.x += 0.75 * (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
+            anPs.y += 0.75 * (11 - meMusk.NPC[i].hp) * meMusk.rand(0, 3) * (Math.random() > 0.5 ? -1 : 1);
             var addx = anPs.x - meMusk.NPC[i].position.x;
             var addy = anPs.y - meMusk.NPC[i].position.y;
             let mod = Math.round(Math.pow(Math.pow(addx, 2) + Math.pow(addy, 2), 0.5));
@@ -287,8 +287,8 @@ function musketeers(){
             // 找不到目标了
             meMusk.gameOver();
           }
-          if (meMusk.NPC[i].hp / 10 * Math.random() < 0.08 || (meMusk.NPC[i].hp <= 3 && Math.random() < 0.5)){
-            meMusk.NPC[i].lastB = 0;  // 狂暴模式 连发
+          if (meMusk.NPC[i].hp / 10 * Math.random() < 0.2){
+            meMusk.NPC[i].lastB = new Date().getTime() - (-80*meMusk.NPC[i].hp + 1890);  // 狂暴模式 连发
           }else{
             meMusk.NPC[i].lastB = new Date().getTime();
           }
@@ -346,7 +346,7 @@ function musketeers(){
     var Widget = new musketeers();
     Widget.count = 1; //  自动换颜色
     Widget.init(paID, caID);
-    Widget.record = {};  // 储存记录
+    Widget.record = localStorage.getItem('musketeers-js-'+Widget.cc.id) ? JSON.parse(localStorage.getItem('musketeers-js-'+Widget.cc.id)) : {};  // 记录
     var randTeam = function(){
       return ['0,0,0', '176,115,97', '255,0,0', '255,128,64', '0,128,0', '138,27,228', '45,90,210'][Widget.rand(0, 6)];
     }
@@ -410,10 +410,11 @@ function musketeers(){
           Widget.record[item.team] = Widget.record[item.team] ? Widget.record[item.team]+1 : 1;
         }
       });
+      localStorage.setItem('musketeers-js-'+Widget.cc.id, JSON.stringify(Widget.record));  //  保存数据 永不迷路！
       addNStart();
     }
     Widget.mainCalling = function(){
-      if(Widget.cc.height >= 80){
+      if(Widget.cc.height >= 80){  // 不会有比我还矮的吧？QAQ
         var autoCL = 10;  // 换行
         Widget.ctx.globalAlpha = 0.6;
         Widget.ctx.font = '10px Arial';
