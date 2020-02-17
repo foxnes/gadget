@@ -179,6 +179,7 @@ function musketeers(){
       meMusk.gameOver();
     }
     meMusk.ctx.clearRect(0, 0, meMusk.cc.width, meMusk.cc.height);
+    meMusk.mainCalling();
     var hitMe = function(l){
       meMusk.NPC[i].hp -= l;
       if (meMusk.NPC[i].hp <= 0){
@@ -326,7 +327,6 @@ function musketeers(){
     }
   }
   meMusk.main = function() {
-    meMusk.mainCalling();
     meMusk.render();
     if (meMusk.warStart) {
       setTimeout(function() {
@@ -339,6 +339,7 @@ function musketeers(){
     var Widget = new musketeers();
     Widget.count = 1; //  自动换颜色
     Widget.init(paID, caID);
+    Widget.record = {};  // 储存记录
     var randTeam = function(){
       return ['0,0,0', '176,115,97', '255,0,0', '255,128,64', '0,128,0', '138,27,228', '45,90,210'][Widget.rand(0, 6)];
     }
@@ -384,13 +385,37 @@ function musketeers(){
       }
     }
     Widget.warOverCalling = function(){
-      if (Widget.NPC.length > max){
+      var ppLimit = Math.floor(Math.pow(Math.pow(max, 2) + Math.pow(min, 2), 0.5) * 2);
+      if (Widget.NPC.length > ppLimit){
         // 计划生育  偶有生存力特别强的队伍
-        Widget.NPC.splice(0, Widget.NPC.length - max);
+        Widget.NPC.splice(0, Widget.NPC.length - ppLimit);
       }
+      // 记录战绩
+      Widget.NPC.forEach(function(item){
+        if (item.hp > 0){
+          Widget.record[item.team] = Widget.record[item.team] ? Widget.record[item.team]+1 : 1;
+        }
+      });
+      // 定时，防止BUG出现
       setTimeout(function(){
         addNStart();
-      }, 500);
+      }, 1000);
+    }
+    Widget.mainCalling = function(){
+      var autoCL = 10;  // 换行
+      Widget.ctx.globalAlpha = 0.6;
+      Widget.ctx.font = '10px Arial';
+      for (let item in Widget.record){
+        // 打印出来
+        Widget.ctx.fillStyle = 'rgb('+item+')';
+        Widget.ctx.beginPath();
+        Widget.ctx.arc(6, autoCL-4, 4, 0, Math.PI*2);
+        Widget.ctx.closePath();
+        Widget.ctx.fill();
+        Widget.ctx.fillText(Widget.record[item], 12, autoCL);
+        autoCL += 10;
+      }
+      Widget.ctx.globalAlpha = 1;
     }
     addNStart();
     return Widget;
