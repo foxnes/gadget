@@ -17,7 +17,7 @@ function file2str(){
 		for (var i = 0; i < f.length; i++) {
 			f[i] = "("+f[i]+")";
 		}
-		f = chunk(f,1024*5);//每组1024*n个字符 （影响速率） f[array(n),array(n)];
+		f = chunk(f, 1024*5);//每组1024*n个字符 （影响速率） f[array(n),array(n)];
 		var pgscount = 0;
 		progress.value=0;
     	var dow = setInterval(function(){
@@ -55,7 +55,12 @@ function download(content, filename) {
 }
 function downloader(content, filename){
 	var eleLink = document.createElement('a');
-    eleLink.download = filename+"_["+window.location.host+"]_"+"."+fext.value;
+    if (fext.value){
+        var _fext = "."+fext.value;
+    }else{
+        var _fext = '';
+    }
+    eleLink.download = filename+"_[Str2File]_"+_fext;
     eleLink.style.display = 'none';
     content = content.replace(/[^\u0000-\u00FF]/g, function ($0) {return escape($0).replace(/(%u)(\w{4})/gi, "&#x$2;") });
     content = content.split(";");
@@ -76,7 +81,7 @@ function downloader(content, filename){
                 aovimg.src = blob;
             }
             if (isvtext.checked) {
-                aovtext.value=new Base64().decode(blob);
+                aovtext.value = window.btoa(blob);
             }
             if (!isvimg.checked && !isvtext.checked) {
                 blob = base642bin(blob);
@@ -127,7 +132,7 @@ function chunk(array, size) {
 }
 function tstrencode(str){
 	for (var i = 0; i < _keyStr.length; i++) {
-		if (Math.random()>llimit.value) {
+		if (Math.random()*10000 > llimit.value) {
 			str = str.replace(new RegExp("\\("+_keyStr[i]+"\\)","g"), _ttStr[i]);
 		}
 	}
@@ -152,54 +157,3 @@ function toobigtodownload(content, filename){
     eleLink.click();
     document.body.removeChild(eleLink);
 }
-
-function Base64() {
- _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
- this.decode = function (input) { 
-  var output = ""; 
-  var chr1, chr2, chr3; 
-  var enc1, enc2, enc3, enc4; 
-  var i = 0; 
-  input = input.replace(/[^A-Za-z0-9\+\/\=]/g, ""); 
-  while (i < input.length) { 
-   enc1 = _keyStr.indexOf(input.charAt(i++)); 
-   enc2 = _keyStr.indexOf(input.charAt(i++)); 
-   enc3 = _keyStr.indexOf(input.charAt(i++)); 
-   enc4 = _keyStr.indexOf(input.charAt(i++)); 
-   chr1 = (enc1 << 2) | (enc2 >> 4); 
-   chr2 = ((enc2 & 15) << 4) | (enc3 >> 2); 
-   chr3 = ((enc3 & 3) << 6) | enc4; 
-   output = output + String.fromCharCode(chr1); 
-   if (enc3 != 64) { 
-    output = output + String.fromCharCode(chr2); 
-   } 
-   if (enc4 != 64) { 
-    output = output + String.fromCharCode(chr3); 
-   } 
-  } 
-  output = _utf8_decode(output); 
-  return output; 
- } 
- _utf8_decode = function (utftext) { 
-  var string = ""; 
-  var i = 0; 
-  var c = c1 = c2 = 0; 
-  while ( i < utftext.length ) { 
-   c = utftext.charCodeAt(i); 
-   if (c < 128) { 
-    string += String.fromCharCode(c); 
-    i++; 
-   } else if((c > 191) && (c < 224)) { 
-    c2 = utftext.charCodeAt(i+1); 
-    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63)); 
-    i += 2; 
-   } else { 
-    c2 = utftext.charCodeAt(i+1); 
-    c3 = utftext.charCodeAt(i+2); 
-    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63)); 
-    i += 3; 
-   } 
-  } 
-  return string; 
- } 
-} 

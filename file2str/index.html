@@ -4,15 +4,19 @@
 	<meta charset="utf-8">
 	<title>FILE2STR</title>
 	<style type="text/css">
-	*{margin: 0;padding: 0;box-sizing: border-box;}
-	body{width: 800px;margin: 20px auto;}
-	.s{margin: 20px 0;}
-	#r{padding: 8px 10px;border: 1px solid gray;overflow-y: scroll;max-height: 600px;}
-	img{max-width: 100%;}
-	pre{white-space: pre-wrap;font-family: inherit;}
-	input[type=file]{border: 1px solid gray;padding: 4px 6px;}
-	.bd{border: 1px solid gray;display: inline-block;padding: 4px 6px;}
-	fieldset{margin: 10px 0;padding: 5px 10px;}
+  *{margin: 0;padding: 0;box-sizing: border-box;}
+  body{width: 800px;margin: 20px auto;font-family: '微软雅黑'}
+  .s{margin: 20px 0;}
+  #r{padding: 8px 10px;border: 1px solid gray;overflow-y: scroll;max-height: 600px;}
+  img{max-width: 100%;}
+  pre{white-space: pre-wrap;font-family: inherit;}
+  input[type=file]{border: 1px solid gray;padding: 4px 6px;}
+  .bd{border: 1px solid gray;display: inline-block;padding: 4px 6px;}
+  fieldset{margin: 10px 0;padding: 5px 10px;}
+  small{font-size: 0.8em;color: #6e6e6e}
+  button{font-size: inherit;background: #e2e2e2;color:#434343;border: none;margin: 2px;padding: 2px 5px;border-radius: 4px;border-bottom: 2px solid #cbcbcb;border-right: 2px solid #d1d1d1;}
+  label{margin: 3px;}
+  button,input{font-family: inherit;}
 	</style>
 </head>
 <body>
@@ -28,37 +32,43 @@
 	<h2>转换成字符串：</h2><br />
 	<fieldset>
 	<legend>编码设置</legend>
-	大小限制：<input style="width: 60px;" id="kblimit" type="number" value="50">（单位KB，字符串大于该值时自动下载，建议设置小于100KB，否则浏览器可能会卡死）<br />
-	不编码率：<input style="width: 60px;" type="number" id="llimit" value="0">（0.001~0.005，用于缓解生成超长字符串卡死的情况，设置此项后 大小限制 可调大）
-	自动配置：<a href="javascript:kblimit.value=1024;llimit.value=0.005"><button>文件大于500KB 不自动下载</button></a>
-	<a href="javascript:kblimit.value=512;llimit.value=0.002"><button>文件大于100KB小于500KB 不自动下载</button></a>
-	<a href="javascript:kblimit.value=100;llimit.value=0.001"><button>文件小于100KB 不自动下载</button></a>
-	<a href="javascript:kblimit.value=50;llimit.value=0"><button>文件小于50KB</button></a>
-	<br />
+	大小限制：<input style="width: 60px;" id="kblimit" type="number" value="50"><small>（单位KB，字符串大于该值时自动下载，建议设置小于512KB，否则浏览器可能会卡死）</small><br />
+	不编码率：<input style="width: 60px;" type="number" id="llimit" value="0"><small>（0~50，用于缓解生成超长字符串卡死的情况，设置此项后 大小限制 可调大）</small><br />
+  <fieldset>
+    <legend>常用配置</legend>
+  	<button onclick="kblimit.value=1024;llimit.value=50">文件500KB+ (不自动下载)</button>
+  	<button onclick="kblimit.value=512;llimit.value=20">文件100KB~500KB (不自动下载)</button>
+    <br />
+  	<button onclick="kblimit.value=100;llimit.value=10">文件小于100KB (不自动下载)</button>
+  	<button onclick="kblimit.value=50;llimit.value=0">文件小于50KB</button>
+	</fieldset>
 	<small>一般建议超过100KB的文件都开启自动下载（大小限制设置为50~100），否则字符串太大浏览器可能受不了，或者输出得极慢</small>
 	</fieldset>
 	上传：<input type="file" id="f">
 	<button onclick="file2str();">确定</button>
 </div>
 
-<div class="s">
-	字符串：
-	<div id="r" contenteditable="true">转换后的字符会显示在这里</div>
-</div>
+
+<fieldset class="s">
+  <legend>字符串</legend>
+	<div id="r" contenteditable="true">转换后的字符会显示在这里，如果要把字符串转回去，可以把字符串复制到这里。</div>
+</fieldset>
 
 <div class="s">
-	<h2>转换回文件：</h2><br />
-	<input type="file" id="rf">
-	<div class="bd">预览图片：<input type="checkbox" id="isvimg"></div>
-	<div class="bd">预览文本：<input type="checkbox" id="isvtext"></div>
+	<h3>转换回文件：</h3><br />
+	<input type="file" id="rf"><br />
+  <small>可以上传txt。你也可以把字符串复制到上边的[字符串]区域而不上传文件。</small><br />
+	<label class="bd">预览图片：<input type="checkbox" id="isvimg"></label>
+	<label class="bd">预览文本：<input type="checkbox" id="isvtext"></label>
+  <br />
 	后缀：<input type="text" id="fext" placeholder="txt/jpg/png/zip">
-	<button onclick="download(r.innerHTML,'dl')">确定/下载</button>
+	<button onclick="download(r.innerHTML,'dl')">确定 / 下载</button>
 </div>
 
 <div class="s">
 	<h2>预览区：</h2><br />
-	<img style="display: block;float: left;" src="https://i.loli.net/2018/07/31/5b5fca0b7e5a5.jpg" id="aovimg">
-	<textarea style="width: 540px;height: 250px;" id="aovtext"></textarea>
+	<img style="display: block;" src="https://i.loli.net/2018/07/31/5b5fca0b7e5a5.jpg" id="aovimg">
+	<textarea style="width: 100%;height: 250px;" id="aovtext"></textarea>
 </div>
 
 <div class="s">
@@ -74,8 +84,6 @@
 有的时候预览图或字会出现乱码，可能的原因是1.字符编码 2.您输入的字符串内容不是由图片或者文字转换得来的，并不说明文件被损坏，您可以下载下来自行修改后缀。 3.部分乱码可能是输出了文件头部信息
 
 文件太大的时候点击按钮后会卡顿几秒钟，请不要重复点击，请盯着进度条看~(~▽~)~。
-
-若输出的字符串中有一堆的(+)(:)等等符号，请刷新页面
 
 </pre>
 	<small>&copy; (c) 2018 <a href="http://blog.lljh.bid">Luuljh</a></small>

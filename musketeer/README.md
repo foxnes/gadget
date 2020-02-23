@@ -9,8 +9,7 @@ How to use:
 __## mini挂件 (简单) ##__:
 
 ```
-var mm = new musketeers();
-mm.justWidget('容器ID','canvasID', 火枪手最少量, 火枪手最多量);
+var mm = new musketeers().justWidget('father', 'cc', 3, 5); // 同样可实现下面自定义
 ```
 最少量, 最多量按照容器大小来填
 会自动获取"容器ID"的高度和宽度并设置为canvas的高度和宽度。
