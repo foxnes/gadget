@@ -43,7 +43,7 @@ function ready2go(har){
   });
 }
 
-document.body.innerHTML += '<div style="position: fixed;width: 350px;height: 70px;right: 0;bottom: 0;background-color: rgba(227, 227, 227, 0.96);padding: 15px;">请选中har文件：<br /><input type="file" id="dl_select_file_555" /><br /><input type="text" id="dl_matches_mime_555" value="video" placeholder="匹配mime值" /><input type="text" id="dl_matches_id_555" placeholder="匹配URL" /></div>';
+document.body.innerHTML += '<div style="position: fixed;right: 0;bottom: 0;background-color: rgba(227, 227, 227, 0.96);padding: 15px;">请选中har文件：<br /><input type="file" id="dl_select_file_555" /><br /><input type="text" id="dl_matches_mime_555" value="video" placeholder="匹配mime值" /><input type="text" id="dl_matches_id_555" placeholder="匹配URL" /></div>';
 document.getElementById("dl_select_file_555").onchange = function(){
   if (this.files[0]) {
     let reader = new FileReader();
