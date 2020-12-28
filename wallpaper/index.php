@@ -30,7 +30,7 @@ if ($_GET['data'] == "true") {
 	<title>BD IMG</title>
 	<meta name="referrer" content="never">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.js"></script>
 	<script type="text/javascript" src="s/jquery.lazyload.js"></script>
 	<script type="text/javascript" src="s/jquery.xgallerify.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="s/i.css">

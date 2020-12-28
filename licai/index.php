@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 date_default_timezone_set('PRC');
-$pwd = 'e10adc3949ba59abbe56e057f20f883e'; //在这里修改密码（md5）这里的默认密码是123456
+$pwd = 'bfd59291e825b5f2bbf1eb76569f8fe7'; //在这里修改密码（md5）这里的默认密码是asd123
 
 if ($_POST['do']):
   (file_exists('./data/'))?:mkdir('./data/');
@@ -157,6 +157,9 @@ else:
 *{margin: 0;padding: 0;border: none;font-family: inherit;}
 html{background-color: black;padding: 15px;user-select:none;}
 body{word-break: break-all;color: white;font-family: SimHei,monospace;font-size: 18px;line-height: 18px;}
+@media screen and (max-width: 500px){
+  body{font-size: 11px;line-height: 11px;}
+}
 p{margin-bottom: 5px;}
 pre{white-space: pre-wrap;}
 .hidden{
